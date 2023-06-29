@@ -223,7 +223,7 @@ final_dataset <- final_dataset |> mutate(point_colors =
   
   
    
-#PLOT CHART AND sAVE TO LOCAL DRIVE
+#PLOT CHART AND SAVE TO LOCALLY
 ggsave(filename = "tornadoes.png",
        device = "png",width = 7.5,height = 5 ,units = "in",dpi = 400,plot = last_plot())
 
