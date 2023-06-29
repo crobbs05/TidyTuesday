@@ -16,7 +16,7 @@ library(ggtext)
 library(ggrepel)
 
 
-####Read in Data Manually####
+#READ IN DATA
 tornadoes <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-05-16/tornados.csv')
 
 
@@ -26,7 +26,8 @@ tornadoes <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/
 
 
 
-#create a spatial feature because you need to join data to provide regional context
+
+#CREATE SPATIAL DATA FOR JOIN WITH MISSISSIPPI COUNTIES
 tornadoes_sf <- tornadoes |> 
    select(yr,st,loss, slat, slon) |> 
    st_as_sf(coords = c("slon", "slat"),remove = FALSE, crs = 4326) |> 
@@ -39,8 +40,8 @@ tornadoes_sf <- tornadoes |>
 
 
 
-#get Mississippi counties.
-#will use data set to join with toronadoe data
+
+#PULL MISSISSPPI COUNTY DATA FOR JOIN WITH TORNADO DATA
 mississippi_counties <- tigris::counties(state ="MS") |> st_transform(crs = 2163)
 
 
@@ -49,8 +50,7 @@ mississippi_counties <- tigris::counties(state ="MS") |> st_transform(crs = 2163
 
 
 
-
-#join tornadoes and mississippi county data together
+#JOIN TORNADO AND MISSIPPI COUNTY DATA TOGETHER
 mississippi_tornadoes <- st_join(mississippi_counties, tornadoes_sf, left = T)
 
 
@@ -58,9 +58,15 @@ mississippi_tornadoes <- st_join(mississippi_counties, tornadoes_sf, left = T)
 
 
 
-#get population data at a county level from the 2021 american community survey data.
-#create individual variable for attributes 
+
+#FIND TOTAL POPULATION VARIABALE
 variables <- tidycensus::load_variables(year = 2021,dataset = "acs5/subject")
+
+
+
+
+
+#CREATE MISSISSIPI POPULATION VARIABLE
 mississippi_variables <- c(total_pop="S0101_C01_001")
 
 
@@ -68,8 +74,7 @@ mississippi_variables <- c(total_pop="S0101_C01_001")
 
 
 
-
-#get Mississippi county population data
+#PULL MISSISSIPPI COUNTY POPUALTION DATA
 mississippi_population <- get_acs(geography = "county", state = "MS",
 variables = mississippi_variables,year = 2021,geometry =FALSE )
 
@@ -219,7 +224,7 @@ final_dataset <- final_dataset |> mutate(point_colors =
   
    
 #PLOT CHART AND sAVE TO LOCAL DRIVE
-ggsave(filename = "C:/Users/chauncey.robbs/Documents/tornadoes.png",
+ggsave(filename = "tornadoes.png",
        device = "png",width = 7.5,height = 5 ,units = "in",dpi = 400,plot = last_plot())
 
  
