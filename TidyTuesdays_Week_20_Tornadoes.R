@@ -1,5 +1,5 @@
 #TidyTuesdays 
-#week 20
+#Week 20
 #Topic:tornadoes
 #by:Chauncey Robbs
 
